@@ -15,7 +15,7 @@ top.title("Chat Application")
 localIPv4 = "192.168.1.208"
 globalIPv4 = "87.92.16.209"
 
-# Remember to Disable firewall for different network connections
+# Remember to Disable firewall for clients in other networks to be able to connect to the server
 
 port_IPv4 = 34000
 buffer = 4096
@@ -63,7 +63,7 @@ def send(command):
     elif command == "/status": 
         serverMessage = f"{command} {receiverName}"
         clientSocketIPv4.send(bytes(serverMessage, "utf8")) 
-    elif command == "/create" or command == "/delete" or command == "/join" or command == "/leave": 
+    elif command == "/create" or command == "/delete" or command == "/join" or command == "/leave" or command == "/members": 
         serverMessage = f"{command} {groupName}"
         clientSocketIPv4.send(bytes(serverMessage, "utf8")) 
     elif command == "/rename": 
@@ -127,7 +127,7 @@ receiveBoxFrame.pack()
 scrollbar = tkinter.Scrollbar(receiveBoxFrame)  
 
 # For the messages to be received.
-receiveBox = tkinter.Text(receiveBoxFrame, height=20, width=70, yscrollcommand=scrollbar.set)
+receiveBox = tkinter.Text(receiveBoxFrame, height=20, width=55, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 receiveBox.pack(fill=tkinter.BOTH)
 
@@ -142,7 +142,7 @@ labelSendBox.grid(row=1, column=1)
 
 
 sendBox = tkinter.StringVar()  # For the messages to be sent.
-sendEntry = tkinter.Entry(sendBoxFrame, textvariable=sendBox, width=65)
+sendEntry = tkinter.Entry(sendBoxFrame, textvariable=sendBox, width=50)
 sendEntry.grid(row=1,column=2)
 
 

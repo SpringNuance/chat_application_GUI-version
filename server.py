@@ -30,12 +30,12 @@ def accept_clients_IPv6():
         clientIPv6, client_addressIPv6 = socket_IPv6.accept()
         print("%s:%s:%s:%s has connected." % client_addressIPv6)
         clientIPv6.send(bytes("Welcome to the chat server!", "utf8"))
-        clientIPv6.send(bytes("\nClick 'Help' button to see instructions on how to use the chat application", "utf8"))
         clientIPv6.send(bytes("\nFirst, please enter your name in message box and click 'Register/Login' button", "utf8"))
         name = clientIPv6.recv(buffer).decode("utf8")
         registeredAddresses[name] = client_addressIPv6
         registeredClients[name] = clientIPv6 # socket
         onlineClients[name] = clientIPv6 # socket
+        clientIPv6.send(bytes("\nClick 'Help' button to see instructions on how to use the chat application", "utf8"))
         message = f"{name} has joined the server"
         broadcast(message, onlineClients)
 
@@ -103,11 +103,13 @@ fileDatabase = {} # dict of file name - file data
 buffer = 4096
 backlog = 5
 localIPv4 = "192.168.1.208"
+globalIPv4 = "87.92.16.209"
 localIPv6 = "fe80::c10c:de5e:2cbf:132c%9"
+globalIPv6 = "2001:14ba:a0bd:dd00:c10c:de5e:2cbf:132c"
 port_IPv4 = 34000
 port_IPv6 = 36000
 address_IPv4 = (localIPv4, port_IPv4)
-address_IPv6 = (localIPv6, port_IPv6)
+address_IPv6 = (globalIPv6, port_IPv6)
 socket_IPv4 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket_IPv6 = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 socket_IPv4.bind(address_IPv4)

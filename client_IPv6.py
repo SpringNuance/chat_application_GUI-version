@@ -6,9 +6,11 @@ import tkinter.messagebox
 top = tkinter.Tk()
 top.title("Chat Application")
 
-# The ISP of the network does not support IPv6. There are no global IPv6
-
 localIPv6 = "fe80::c10c:de5e:2cbf:132c%9"
+globalIPv6 = "2001:14ba:a0bd:dd00:c10c:de5e:2cbf:132c"
+
+# Remember to Disable firewall for clients in other networks to be able to connect to the server
+
 portIPv6 = 36000
 buffer = 1024
 backlog = 5
@@ -120,7 +122,7 @@ receiveBoxFrame.pack()
 scrollbar = tkinter.Scrollbar(receiveBoxFrame)  
 
 # For the messages to be received.
-receiveBox = tkinter.Text(receiveBoxFrame, height=20, width=70, yscrollcommand=scrollbar.set)
+receiveBox = tkinter.Text(receiveBoxFrame, height=20, width=55, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 receiveBox.pack(fill=tkinter.BOTH)
 
@@ -135,7 +137,7 @@ labelSendBox.grid(row=1, column=1)
 
 
 sendBox = tkinter.StringVar()  # For the messages to be sent.
-sendEntry = tkinter.Entry(sendBoxFrame, textvariable=sendBox, width=65)
+sendEntry = tkinter.Entry(sendBoxFrame, textvariable=sendBox, width=50)
 sendEntry.grid(row=1,column=2)
 
 
@@ -226,7 +228,7 @@ top.protocol("WM_DELETE_WINDOW", handleExitProtocol)
 
 
 clientSocketIPv6 = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-addressIPv6 = (localIPv6, portIPv6)
+addressIPv6 = (globalIPv6, portIPv6)
 clientSocketIPv6.connect(addressIPv6)
 
 def main():

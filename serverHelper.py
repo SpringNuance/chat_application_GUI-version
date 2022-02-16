@@ -14,19 +14,20 @@ def publicAnnouncement(senderName, message, onlineClients, registeredClients, bu
 
 def privateMessage(senderName, message, onlineClients, registeredClients, lastOnline, bufferedMessages): 
     receiverName = message.split()[0]
+    timeStamp = datetime.now().strftime("%d/%m/%y %H:%M:%S")
+    messageBody = message.split(' ', 1)[1]
     if receiverName not in registeredClients:
         onlineClients[senderName].send(bytes("There is no users of that name in the server. Please check if there are misspellings", "utf8"))
     elif receiverName not in onlineClients:
-        onlineClients[senderName].send(bytes(f"The user is currently offline. Last online {lastOnline[receiverName]}. \nThey will see your message when they come online again", "utf8"))
-        timeStamp = datetime.now().strftime("%d/%m/%y %H:%M:%S")
-        messageBody = message.split(' ', 1)[1]
-        bufferedMessages[receiverName].append("<" + timeStamp + "> " + senderName + ": " + messageBody)
+        onlineClients[senderName].send(bytes(f"<{timeStamp}> To {receiverName}: {messageBody}", "utf8"))
+        onlineClients[senderName].send(bytes(f"The user is currently offline. Last online {lastOnline[receiverName]}. \nThey will see your message when they come online again", "utf8")) 
+        bufferedMessages[receiverName].append(f"<{timeStamp}> {senderName}: {messageBody}")
     else: 
-        timeStamp = datetime.now().strftime("%d/%m/%y %H:%M:%S")
-        messageBody = message.split(' ', 1)[1]
-        onlineClients[receiverName].send(bytes("<" + timeStamp + "> " + senderName + ": " + messageBody, "utf8"))
+        onlineClients[senderName].send(bytes(f"<{timeStamp}> To {receiverName}: {messageBody}", "utf8"))
         onlineClients[senderName].send(bytes(f"{receiverName} has seen your message", "utf8"))
-
+        onlineClients[receiverName].send(bytes(f"<{timeStamp}> {senderName}: {messageBody}", "utf8"))
+        
+    
 def sendFile(senderName, message, onlineClients, fileDatabase, bufferedMessages):
     receiverName = message.split()[0]
     filePath = message.split()[1]
@@ -169,6 +170,7 @@ def addMembers(senderName, message, groupCreator, groupMembers, onlineClients, r
                 else: 
                     groupMembers[groupName].append(member)
                     onlineClients[senderName].send(bytes(f"User {member} has been successfully added to your group {groupName}\n", "utf8"))
+                    onlineClients[member].send(bytes(f"You are added to the group {groupName} by user {senderName}\n", "utf8"))
             else:
                 onlineClients[senderName].send(bytes(f"User {member} does not exist in registered users and cannot be added to your group {groupName}\n", "utf8"))
 
@@ -184,6 +186,7 @@ def removeMembers(senderName, message, groupCreator, groupMembers, onlineClients
             if member in groupMembers[groupName]:
                 groupMembers[groupName].remove(member)
                 onlineClients[senderName].send(bytes(f"User {member} has been removed from your group {groupName}\n", "utf8"))
+                onlineClients[member].send(bytes(f"You are removed the group {groupName} by user {senderName}\n", "utf8"))
             else:
                 onlineClients[senderName].send(bytes(f"User {member} does not exist in the group {groupName} and cannot be removed from your group\n", "utf8"))
 
@@ -263,6 +266,7 @@ def sendGroupMessage(senderName, message, groupCreator, groupMembers, onlineClie
             timeStamp = datetime.now().strftime("%d/%m/%y %H:%M:%S")
 
             if len(onlineMembersExceptSender) == 0:
+                onlineClients[senderName].send(bytes(f"<{timeStamp}> To group {groupName}: {groupMessage}", "utf8"))
                 onlineClients[senderName].send(bytes(f"All of the members are offline. They will see your message when they go online", "utf8"))
             else:
                 seenMembers = "Members "
@@ -270,6 +274,7 @@ def sendGroupMessage(senderName, message, groupCreator, groupMembers, onlineClie
                     seenMembers += f"{member}, "
                     onlineClients[member].send(bytes(f"<{timeStamp}> Group {groupName}, {senderName}: {groupMessage}", "utf8"))
                 seenMembers = seenMembers[:-2] + " have seen your message"
+                onlineClients[senderName].send(bytes(f"<{timeStamp}> To group {groupName}: {groupMessage}", "utf8"))
                 onlineClients[senderName].send(bytes(seenMembers, "utf8"))
             
             for member in offlineMembers:
