@@ -20,7 +20,7 @@ def accept_clients_IPv4():
         if name not in bufferedMessages:
             bufferedMessages[name] = []
         elif len(bufferedMessages[name]) != 0:
-            clientIPv4.send(bytes("Unseen messages\n", "utf8"))
+            clientIPv4.send(bytes("\nUnseen messages\n", "utf8"))
             for unseenMessage in bufferedMessages[name]:
                 clientIPv4.send(bytes(f"{unseenMessage}\n", "utf8"))
         Thread(target=handle_client, args=(name, clientIPv4)).start()
